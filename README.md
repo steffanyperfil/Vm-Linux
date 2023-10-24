@@ -216,8 +216,50 @@ cd wordpress
 sudo cp wp-config-sample.php wp-config.php 
 
  
+Erro no Phpmyadmin:
 
+Tive um erro de permissão no phpmyadmin que resultava no erro 403
+
+A resolução do erro eu usei o comando:
+
+   cat /var/log/httpd/error_log
+   
+Que me deu essa saida:
+
+[Tue Oct 24 02:38:45.973234 2023] [authz_core:error] [pid 3764:tid 140110080661248] [client 192.168.1.8:13547] AH01630: client denied by server configuration: /var/www/html/phpmyadmin
+
+Entrei na pasta de configuração do /var que foi a pasta:
+
+ vi /etc/httpd/conf.d/phpmyadmin.conf
  
+Estava configurada de forma: 
+
+<Directory /var/www/html/phpmyadmin>
+    AllowOverride All
+    Options FollowSymlinks
+    DirectoryIndex index.php
+    Require all granted
+</Directory>
+
+E ficou assim:
+
+<Directory /var/www/html/phpmyadmin>
+    AllowOverride All
+    Options FollowSymlinks
+    DirectoryIndex index.php
+</Directory>
+
+ Depois baixei os seguintes pacotes:
+
+ sudo dnf install php-xml
+ sudo dnf install php-json
+
+ E dei restart nos apache e no php
+ 
+ sudo systemctl restart httpd    # Se você estiver usando o Apache
+ sudo systemctl restart php-fpm  # Se você estiver usando o PHP-FPM
+
+
 
  
 
